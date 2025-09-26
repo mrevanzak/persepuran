@@ -4,8 +4,13 @@ import { publicProcedure } from "@/lib/orpc";
 
 const API_URL = "https://gapeka2025.com/api/v1";
 
+type LatLng = { latitude: number; longitude: number };
+function toLatLng(tuple: [number, number]): LatLng {
+  return { latitude: tuple[0], longitude: tuple[1] };
+}
+
 export const trainRouter = {
-  getStations: publicProcedure.handler(async () => {
+  stations: publicProcedure.handler(async () => {
     const response = await fetch(`${API_URL}/public-station/stations`);
 
     if (!response.ok) {
@@ -22,7 +27,16 @@ export const trainRouter = {
     });
 
     const stations = dto.array().parse(json.data);
-    return stations;
+    return Object.fromEntries(
+      stations.map((s) => [
+        s.st_id,
+        {
+          cd: s.cd,
+          nm: s.nm,
+          coordinates: toLatLng(s.pos),
+        },
+      ])
+    );
   }),
   routes: publicProcedure.handler(async () => {
     const response = await fetch(`${API_URL}/public-route/route-path`);
@@ -48,7 +62,38 @@ export const trainRouter = {
     });
 
     const routes = dto.array().parse(json.data);
-    return routes;
+    return Object.fromEntries(
+      routes.map((r) => {
+        const coordinates: LatLng[] = [];
+        for (const segment of r.paths) {
+          const [start, end] = segment.pos;
+
+          if (coordinates.length) {
+            const last = coordinates[coordinates.length - 1];
+
+            if (last.latitude !== start[0] || last.longitude !== start[1]) {
+              coordinates.push({ latitude: start[0], longitude: start[1] });
+            }
+          } else {
+            coordinates.push({ latitude: start[0], longitude: start[1] });
+          }
+
+          coordinates.push({ latitude: end[0], longitude: end[1] });
+        }
+
+        return [
+          r.route_id,
+          {
+            len_cm: r.len_cm,
+            paths: r.paths.map((p) => ({
+              pos: [toLatLng(p.pos[0]), toLatLng(p.pos[1])],
+              pos_cm: p.pos_cm,
+            })),
+            coordinates,
+          },
+        ];
+      })
+    );
   }),
   gapeka: publicProcedure.handler(async () => {
     const response = await fetch(`${API_URL}/public-train/gapeka`);

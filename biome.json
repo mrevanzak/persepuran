@@ -22,13 +22,13 @@
       "!**/.source"
     ]
   },
-  "extends": [
-    "ultracite"
-  ],
+  "extends": ["ultracite"],
   "linter": {
     "rules": {
       "style": {
-        "useNamingConvention": "info"
+        "useNamingConvention": "info",
+        "useBlockStatements": "off",
+        "useAtIndex": "off"
       },
       "performance": {
         "noNamespaceImport": "off"

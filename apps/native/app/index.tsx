@@ -5,9 +5,10 @@ import { useCurrentLocation } from "@/lib/use-current-location";
 import { orpc } from "@/utils/orpc";
 
 export default function HomeScreen() {
+  useCurrentLocation();
+
   const { data: routes } = useQuery(orpc.train.routes.queryOptions());
   const { data: stations } = useQuery(orpc.train.getStations.queryOptions());
-  const { data: location } = useCurrentLocation();
 
   return (
     <MapView
@@ -31,6 +32,7 @@ export default function HomeScreen() {
           description={station.cd}
           key={station.st_id}
           title={station.nm}
+          useLegacyPinView
         />
       ))}
     </MapView>

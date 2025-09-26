@@ -47,41 +47,8 @@ export const trainRouter = {
       ),
     });
 
-    const rawRoutes = dto.array().parse(json.data);
-    const routes = rawRoutes
-      .map((route) => {
-        const coordinates: Array<{ latitude: number; longitude: number }> = [];
-
-        for (const segment of route.paths) {
-          const [start, end] = segment.pos;
-
-          if (coordinates.length) {
-            const last = coordinates[coordinates.length - 1];
-
-            if (last.latitude !== start[0] || last.longitude !== start[1]) {
-              coordinates.push({ latitude: start[0], longitude: start[1] });
-            }
-          } else {
-            coordinates.push({ latitude: start[0], longitude: start[1] });
-          }
-
-          coordinates.push({ latitude: end[0], longitude: end[1] });
-        }
-
-        return coordinates.length
-          ? { id: route.route_id, coordinates }
-          : undefined;
-      })
-      .filter(
-        (
-          polyline
-        ): polyline is {
-          id: number;
-          coordinates: Array<{ latitude: number; longitude: number }>;
-        } => Boolean(polyline)
-      );
-
-    return routes
+    const routes = dto.array().parse(json.data);
+    return routes;
   }),
   gapeka: publicProcedure.handler(async () => {
     const response = await fetch(`${API_URL}/public-train/gapeka`);
@@ -112,8 +79,8 @@ export const trainRouter = {
           st_cd: z.string(),
           st_id: z.number(),
           start_ms: z.number(),
-          usr_arriv: z.number().nullable(),
-          usr_depart: z.string(),
+          usr_arriv: z.string().nullable(),
+          usr_depart: z.string().nullable(),
           usr_note: z.string().nullable(),
         })
       ),

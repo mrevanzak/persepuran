@@ -16,7 +16,12 @@
       "id": "3a13834c467a4e7eaa4284d93e51067e",
       "remote": true
     }
-  ]
+  ],
+  "observability": {
+    "logs": {
+      "enabled": true
+    }
+  }
   // For sensitive data, use:
   // wrangler secret put SECRET_NAME
   // Don't add secrets to "vars" - they're visible in the dashboard!

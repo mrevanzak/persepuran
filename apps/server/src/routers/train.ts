@@ -1,5 +1,4 @@
 import { env } from "cloudflare:workers";
-import z from "zod";
 import { publicProcedure } from "@/lib/orpc";
 
 type LatLng = { latitude: number; longitude: number };
@@ -7,16 +6,59 @@ function toLatLng(tuple: [number, number]): LatLng {
   return { latitude: tuple[0], longitude: tuple[1] };
 }
 
+// Type-only DTOs for KV-backed JSON data
+type StationDto = {
+  cd: string;
+  nm: string;
+  pos: [number, number];
+  st_id: number;
+};
+
+type RoutePathDto = {
+  pos: [[number, number], [number, number]];
+  pos_cm: [number, number];
+};
+
+type RouteDto = {
+  route_id: number;
+  len_cm: number;
+  paths: RoutePathDto[];
+};
+
+type GapekaPathDto = {
+  arriv_ms: number;
+  depart_ms: number;
+  inv_route: boolean;
+  org_st_cd: string;
+  org_st_id: number;
+  route_id: number | null;
+  st_cd: string;
+  st_id: number;
+  start_ms: number;
+  usr_arriv: string | null;
+  usr_depart: string | null;
+  usr_note: string | null;
+};
+
+type GapekaDto = {
+  arriv_ms: number;
+  depart_ms: number;
+  mod_day_ms: number;
+  start_st_cd: string;
+  end_st_cd: string;
+  tr_cd: string;
+  tr_id: number;
+  tr_name: string;
+  paths: GapekaPathDto[];
+};
+
 export const trainRouter = {
   stations: publicProcedure.handler(async () => {
     const rawStations = await env.KV.get("stations", "json");
-    const dto = z.object({
-      cd: z.string(),
-      nm: z.string(),
-      pos: z.tuple([z.number(), z.number()]),
-      st_id: z.number(),
-    });
-    const stations = dto.array().parse(rawStations.data);
+    const stations =
+      ((rawStations as { data?: unknown } | null)?.data as
+        | StationDto[]
+        | undefined) ?? [];
 
     return Object.fromEntries(
       stations.map((s) => [
@@ -31,20 +73,10 @@ export const trainRouter = {
   }),
   routes: publicProcedure.handler(async () => {
     const rawRoutes = await env.KV.get("routes", "json");
-    const dto = z.object({
-      route_id: z.number(),
-      len_cm: z.number(),
-      paths: z.array(
-        z.object({
-          pos: z.tuple([
-            z.tuple([z.number(), z.number()]),
-            z.tuple([z.number(), z.number()]),
-          ]),
-          pos_cm: z.tuple([z.number(), z.number()]),
-        })
-      ),
-    });
-    const routes = dto.array().parse(rawRoutes.data);
+    const routes =
+      ((rawRoutes as { data?: unknown } | null)?.data as
+        | RouteDto[]
+        | undefined) ?? [];
 
     return Object.fromEntries(
       routes.map((r) => {
@@ -81,34 +113,10 @@ export const trainRouter = {
   }),
   gapeka: publicProcedure.handler(async () => {
     const rawGapeka = await env.KV.get("gapeka", "json");
-
-    const dto = z.object({
-      arriv_ms: z.number(),
-      depart_ms: z.number(),
-      mod_day_ms: z.number(),
-      start_st_cd: z.string(),
-      end_st_cd: z.string(),
-      tr_cd: z.string(),
-      tr_id: z.number(),
-      tr_name: z.string(),
-      paths: z.array(
-        z.object({
-          arriv_ms: z.number(),
-          depart_ms: z.number(),
-          inv_route: z.boolean(),
-          org_st_cd: z.string(),
-          org_st_id: z.number(),
-          route_id: z.number().nullable(),
-          st_cd: z.string(),
-          st_id: z.number(),
-          start_ms: z.number(),
-          usr_arriv: z.string().nullable(),
-          usr_depart: z.string().nullable(),
-          usr_note: z.string().nullable(),
-        })
-      ),
-    });
-
-    return dto.array().parse(rawGapeka.data);
+    return (
+      ((rawGapeka as { data?: unknown } | null)?.data as
+        | GapekaDto[]
+        | undefined) ?? []
+    );
   }),
 };

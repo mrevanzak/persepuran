@@ -8,6 +8,12 @@ import type { AppRouterClient } from "../../server/src/routers";
 
 export const getQueryClient = () =>
   new QueryClient({
+    defaultOptions: {
+      queries: {
+        // 1 day
+        gcTime: 1000 * 60 * 60 * 24,
+      },
+    },
     queryCache: new QueryCache({
       onError: (error) => {
         toast.error(error.message);

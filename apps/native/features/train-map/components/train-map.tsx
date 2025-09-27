@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import MapView, { Marker, MarkerAnimated, Polyline } from "react-native-maps";
-import { useAnimatedMarkerPositions } from "@/features/train-map/hooks/use-animated-marker-positions";
 import { useFocusOnTrain } from "@/features/train-map/hooks/use-focus-on-train";
 import { useTrainMapData } from "@/features/train-map/hooks/use-train-map-data";
 import { MARKER_CENTER_OFFSET_X, MARKER_CENTER_OFFSET_Y } from "../constants";
@@ -17,8 +16,6 @@ export function TrainMap() {
   );
 
   useFocusOnTrain(mapRef, focusedTrain);
-
-  const { getPosition } = useAnimatedMarkerPositions(liveTrains);
 
   return (
     <MapView
@@ -60,7 +57,7 @@ export function TrainMap() {
             y: MARKER_CENTER_OFFSET_Y,
             x: MARKER_CENTER_OFFSET_X,
           }}
-          coordinate={getPosition(train.id, train.position)}
+          coordinate={train.position}
           description={`${train.code} • ${train.moving ? "On the move" : "At station"}`}
           key={train.id}
           onDeselect={() => setFocusedTrainId(null)}

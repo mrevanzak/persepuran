@@ -22,7 +22,6 @@ export function TrainMap() {
 
   return (
     <MapView
-      followsUserLocation
       mapType="hybridFlyover"
       ref={mapRef}
       showsCompass={false}

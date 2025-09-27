@@ -1,8 +1,6 @@
-import { ORPCError } from "@orpc/client";
+import { env } from "cloudflare:workers";
 import z from "zod";
 import { publicProcedure } from "@/lib/orpc";
-
-const API_URL = "https://gapeka2025.com/api/v1";
 
 type LatLng = { latitude: number; longitude: number };
 function toLatLng(tuple: [number, number]): LatLng {
@@ -11,42 +9,28 @@ function toLatLng(tuple: [number, number]): LatLng {
 
 export const trainRouter = {
   stations: publicProcedure.handler(async () => {
-    const response = await fetch(`${API_URL}/public-station/stations`);
-
-    if (!response.ok) {
-      throw new ORPCError("INTERNAL_SERVER_ERROR");
-    }
-
-    const json = await response.json();
-
+    const rawStations = await env.KV.get("stations", "json");
     const dto = z.object({
       cd: z.string(),
       nm: z.string(),
       pos: z.tuple([z.number(), z.number()]),
       st_id: z.number(),
     });
+    const stations = dto.array().parse(rawStations.data);
 
-    const stations = dto.array().parse(json.data);
     return Object.fromEntries(
       stations.map((s) => [
         s.st_id,
         {
           cd: s.cd,
           nm: s.nm,
-          coordinates: toLatLng(s.pos),
+          coordinates: toLatLng([s.pos[0], s.pos[1]]),
         },
       ])
     );
   }),
   routes: publicProcedure.handler(async () => {
-    const response = await fetch(`${API_URL}/public-route/route-path`);
-
-    if (!response.ok) {
-      throw new ORPCError("INTERNAL_SERVER_ERROR");
-    }
-
-    const json = await response.json();
-
+    const rawRoutes = await env.KV.get("routes", "json");
     const dto = z.object({
       route_id: z.number(),
       len_cm: z.number(),
@@ -60,8 +44,8 @@ export const trainRouter = {
         })
       ),
     });
+    const routes = dto.array().parse(rawRoutes.data);
 
-    const routes = dto.array().parse(json.data);
     return Object.fromEntries(
       routes.map((r) => {
         const coordinates: LatLng[] = [];
@@ -96,13 +80,7 @@ export const trainRouter = {
     );
   }),
   gapeka: publicProcedure.handler(async () => {
-    const response = await fetch(`${API_URL}/public-train/gapeka`);
-
-    if (!response.ok) {
-      throw new ORPCError("INTERNAL_SERVER_ERROR");
-    }
-
-    const json = await response.json();
+    const rawGapeka = await env.KV.get("gapeka", "json");
 
     const dto = z.object({
       arriv_ms: z.number(),
@@ -131,7 +109,6 @@ export const trainRouter = {
       ),
     });
 
-    const routes = dto.array().parse(json.data);
-    return routes;
+    return dto.array().parse(rawGapeka.data);
   }),
 };

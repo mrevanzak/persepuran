@@ -2,16 +2,19 @@ import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { toast } from "sonner-native";
 import { authClient } from "@/lib/auth-client";
 import type { AppRouterClient } from "../../server/src/routers";
 
-export const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (error) => {
-      console.log(error);
-    },
-  }),
-});
+export const getQueryClient = () =>
+  new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error) => {
+        toast.error(error.message);
+        console.error(error);
+      },
+    }),
+  });
 
 export const link = new RPCLink({
   url: `${process.env.EXPO_PUBLIC_SERVER_URL}/rpc`,

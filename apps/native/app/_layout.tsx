@@ -12,11 +12,12 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "../global.css";
 import React, { useRef } from "react";
 import { Platform } from "react-native";
+import { Toaster } from "sonner-native";
 import { setAndroidNavigationBar } from "@/lib/android-navigation-bar";
 import { NAV_THEME } from "@/lib/constants";
 import { clientPersister } from "@/lib/mmkv";
 import { useColorScheme } from "@/lib/use-color-scheme";
-import { queryClient } from "@/utils/orpc";
+import { getQueryClient } from "@/utils/orpc";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -35,6 +36,7 @@ export default function RootLayout() {
   const hasMounted = useRef(false);
   const { colorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+  const [queryClient] = React.useState(() => getQueryClient());
 
   useIsomorphicLayoutEffect(() => {
     if (hasMounted.current) {
@@ -66,6 +68,7 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
+            <Toaster />
           </GestureHandlerRootView>
         </ThemeProvider>
       </QueryClientProvider>

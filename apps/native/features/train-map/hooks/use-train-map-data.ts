@@ -7,8 +7,8 @@ import type {
   Routes,
   Stations,
   Train,
-} from "./train-projection";
-import { projectTrain } from "./train-projection";
+} from "../utils/train-projection";
+import { projectTrain } from "../utils/train-projection";
 
 function useTicker(intervalMs: number) {
   const [now, setNow] = useState(() => Date.now());

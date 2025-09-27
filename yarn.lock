@@ -4939,9 +4939,9 @@ css-select@^5.1.0:
   dependencies:
     boolbase "^1.0.0"
     css-what "^6.1.0"
+    domhandler "^5.0.2"
     domutils "^3.0.1"
     nth-check "^2.0.1"
-    domhandler "^5.0.2"
 
 css-tree@^1.1.3:
   version "1.1.3"
@@ -5109,12 +5109,22 @@ dotenv@^16.4.5, dotenv@~16.4.5:
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.4.7.tgz"
   integrity sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==
 
-dotenv@^17.2.1:
+dotenv@^17.1.0, dotenv@^17.2.1, dotenv@^17.2.2:
   version "17.2.2"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-17.2.2.tgz"
   integrity sha512-Sf2LSQP+bOlhKWWyhFsn0UsfdK/kCWRv1iuA2gXAwt3dyNabr6QSj00I2V10pidqz69soatm9ZwZvpQMTIOd5Q==
 
-dotenv-expand@~11.0.6:
+dotenv-cli@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.npmjs.org/dotenv-cli/-/dotenv-cli-10.0.0.tgz"
+  integrity sha512-lnOnttzfrzkRx2echxJHQRB6vOAMSCzzZg79IxpC00tU42wZPuZkQxNNrrwVAxaQZIIh001l4PxVlCrBxngBzA==
+  dependencies:
+    cross-spawn "^7.0.6"
+    dotenv "^17.1.0"
+    dotenv-expand "^11.0.0"
+    minimist "^1.2.6"
+
+dotenv-expand@^11.0.0, dotenv-expand@~11.0.6:
   version "11.0.7"
   resolved "https://registry.npmjs.org/dotenv-expand/-/dotenv-expand-11.0.7.tgz"
   integrity sha512-zIHwmZPRshsCdpMDyVsqGmgyP0yT8GAgXUnkdAoJisxvf33k7yO6OuoKmcTGuXPWSsm8Oh88nZicRLA9Y0rUeA==
@@ -7108,7 +7118,7 @@ minimatch@^9.0.0, minimatch@^9.0.4:
   dependencies:
     brace-expansion "^2.0.1"
 
-minimist@^1.2.0:
+minimist@^1.2.0, minimist@^1.2.6:
   version "1.2.8"
   resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.8.tgz"
   integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
@@ -7164,12 +7174,14 @@ nanostores@^1.0.1:
   resolved "https://registry.npmjs.org/nanostores/-/nanostores-1.0.1.tgz"
   integrity sha512-kNZ9xnoJYKg/AfxjrVL4SS0fKX++4awQReGqWnwTRHxeHGZ1FJFVgTqr/eMrNQdp0Tz7M7tG/TDaX8QfHDwVCw==
 
-"native@apps/native":
+native@^workspace:apps/native:
   version "workspace:apps/native"
   resolved "workspace:apps/native"
   devDependencies:
     "@babel/core" "^7.26.10"
     "@types/react" "~19.1.10"
+    dotenv "^17.2.2"
+    dotenv-cli "^10.0.0"
     tailwindcss "^3.4.17"
     typescript "~5.9.2"
   dependencies:
@@ -8451,7 +8463,7 @@ serve-static@^1.16.2:
     parseurl "~1.3.3"
     send "0.19.0"
 
-"server@apps/server":
+server@^workspace:apps/server:
   version "workspace:apps/server"
   resolved "workspace:apps/server"
   devDependencies:
@@ -9442,7 +9454,7 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-"web@apps/web":
+web@^workspace:apps/web:
   version "workspace:apps/web"
   resolved "workspace:apps/web"
   devDependencies:

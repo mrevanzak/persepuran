@@ -9,7 +9,15 @@
     "prebuild": "expo prebuild",
     "web": "expo start --web",
     "expo:prebuild": "bun expo prebuild",
-    "expo:prebuild:clean": "bun expo:prebuild --clean"
+    "expo:prebuild:clean": "bun expo:prebuild --clean",
+    "xcode": "xed -b ios",
+    "doctor": "bunx expo-doctor@latest",
+    "with-env": "dotenv -c development --",
+    "start:production": "cross-env APP_ENV=staging NODE_ENV=production bun run start",
+    "build:development": "dotenv -c development -- eas build --profile development",
+    "build:production": "dotenv -c production -- eas build --profile production",
+    "submit:production": "bun run build:production --auto-submit",
+    "ota": "dotenv -c production -- eas update --branch main --clear-cache"
   },
   "dependencies": {
     "@better-auth/expo": "^1.3.13",
@@ -56,6 +64,8 @@
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@types/react": "~19.1.10",
+    "dotenv": "^17.2.2",
+    "dotenv-cli": "^10.0.0",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.9.2"
   },

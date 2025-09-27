@@ -1,3 +1,4 @@
+import Env from "@env";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
@@ -23,7 +24,7 @@ export const getQueryClient = () =>
   });
 
 export const link = new RPCLink({
-  url: `${process.env.EXPO_PUBLIC_SERVER_URL}/rpc`,
+  url: `${Env.API_URL}/rpc`,
   headers() {
     const headers = new Map<string, string>();
     const cookies = authClient.getCookie();

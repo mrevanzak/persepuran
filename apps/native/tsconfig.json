@@ -3,8 +3,15 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": ["./*"],
-      "@server/*": ["../server/src/*"]
+      "@/*": [
+        "./*"
+      ],
+      "@server/*": [
+        "../server/src/*"
+      ],
+      "@env": [
+        "./utils/env.js"
+      ]
     }
   },
   "include": [

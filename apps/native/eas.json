@@ -5,17 +5,51 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+      "extends": "staging",
+      "distribution": "internal",
+      "channel": "development",
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "APP_ENV": "development"
+      }
     },
-    "preview": {
-      "distribution": "internal"
+    "staging": {
+      "extends": "production",
+      "channel": "staging",
+      "android": {
+        "distribution": "internal"
+      },
+      "env": {
+        "APP_ENV": "staging"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://persepuran-server.mrevanzak.workers.dev",
+        "APP_ENV": "production"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "staging": {
+      "extends": "production",
+      "android": {
+        "track": "internal",
+        "releaseStatus": "completed"
+      }
+    },
+    "production": {
+      "android": {
+        "track": "production",
+        "releaseStatus": "completed"
+      },
+      "ios": {
+        "appleId": "mrevanzak@gmail.com"
+      }
+    }
   }
 }

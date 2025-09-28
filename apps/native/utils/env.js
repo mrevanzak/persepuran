@@ -7,9 +7,13 @@
  */
 
 import Constants from "expo-constants";
+import { ClientEnv } from "@/env";
 
 /**
  *  @type {typeof import('../../env').ClientEnv}
  */
-const Env = Constants.expoConfig?.extra ?? {};
+const Env =
+  ClientEnv.APP_ENV === "development"
+    ? ClientEnv
+    : (Constants.expoConfig?.extra ?? {});
 export default Env;

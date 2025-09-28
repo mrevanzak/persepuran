@@ -13,7 +13,7 @@
     "xcode": "xed -b ios",
     "doctor": "bunx expo-doctor@latest",
     "with-env": "dotenv -c development --",
-    "start:production": "cross-env APP_ENV=staging NODE_ENV=production bun run start",
+    "start:production": "cross-env APP_ENV=staging NODE_ENV=production bun run dev",
     "build:development": "dotenv -c development -- eas build --profile development",
     "build:production": "dotenv -c production -- eas build --profile production",
     "submit:production": "bun run build:production --auto-submit",
@@ -64,6 +64,7 @@
   "devDependencies": {
     "@babel/core": "^7.26.10",
     "@types/react": "~19.1.10",
+    "cross-env": "^10.0.0",
     "dotenv": "^17.2.2",
     "dotenv-cli": "^10.0.0",
     "tailwindcss": "^3.4.17",

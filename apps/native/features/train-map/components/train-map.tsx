@@ -1,9 +1,14 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
-import MapView, { Marker, MarkerAnimated, Polyline } from "react-native-maps";
+import MapView, { Marker, Polyline } from "react-native-maps";
+import {
+  AnimatedMarker,
+  useAnimatedRegion,
+} from "@/components/animated-marker";
 import { useFocusOnTrain } from "@/features/train-map/hooks/use-focus-on-train";
 import { useTrainMapData } from "@/features/train-map/hooks/use-train-map-data";
 import { MARKER_CENTER_OFFSET_X, MARKER_CENTER_OFFSET_Y } from "../constants";
+import type { ProjectedTrain } from "../utils/train-projection";
 
 export function TrainMap() {
   const { routes, stations, liveTrains } = useTrainMapData();
@@ -48,24 +53,60 @@ export function TrainMap() {
           />
         ))}
       {liveTrains?.map((train) => (
-        <MarkerAnimated
-          calloutOffset={{
-            y: -48,
-            x: 0,
-          }}
-          centerOffset={{
-            y: MARKER_CENTER_OFFSET_Y,
-            x: MARKER_CENTER_OFFSET_X,
-          }}
-          coordinate={train.position}
-          description={`${train.code} • ${train.moving ? "On the move" : "At station"}`}
+        <TrainMarker
+          animated={focusedTrain?.id === train.id}
           key={train.id}
-          onDeselect={() => setFocusedTrainId(null)}
-          onSelect={() => setFocusedTrainId(train.id)}
-          pinColor={train.moving ? "#22c55e" : "#0ea5e9"}
-          title={train.name}
+          setFocusedTrainId={setFocusedTrainId}
+          train={train}
         />
       ))}
     </MapView>
+  );
+}
+
+function TrainMarker({
+  train,
+  setFocusedTrainId,
+  animated,
+}: {
+  train: ProjectedTrain;
+  setFocusedTrainId: (id: number | null) => void;
+  animated?: boolean;
+}) {
+  const animatedRegion = useAnimatedRegion({
+    latitude: train.position.latitude,
+    longitude: train.position.longitude,
+  });
+
+  useEffect(() => {
+    if (!animated) return;
+
+    animatedRegion.animate({
+      ...train.position,
+      duration: 1000,
+    });
+  }, [animatedRegion.animate, train.position, animated]);
+
+  return (
+    <AnimatedMarker
+      {...(animated && {
+        animatedProps: animatedRegion.props,
+      })}
+      calloutOffset={{
+        y: -48,
+        x: 0,
+      }}
+      centerOffset={{
+        y: MARKER_CENTER_OFFSET_Y,
+        x: MARKER_CENTER_OFFSET_X,
+      }}
+      coordinate={train.position}
+      description={`${train.code} • ${train.moving ? "On the move" : "At station"}`}
+      key={train.id}
+      onDeselect={() => setFocusedTrainId(null)}
+      onSelect={() => setFocusedTrainId(train.id)}
+      pinColor={train.moving ? "#22c55e" : "#0ea5e9"}
+      title={train.name}
+    />
   );
 }

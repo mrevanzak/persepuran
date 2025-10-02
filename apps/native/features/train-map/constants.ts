@@ -1,9 +1,6 @@
 export const FOCUS_REGION_DELTA = 0.02;
-export const FOCUS_ANIM_DURATION_MS = 500;
-export const MARKER_ANIM_DURATION_MS = 900;
+export const FOCUS_ANIM_DURATION_MS = 1000;
+export const MARKER_ANIM_DURATION_MS = 1000;
 export const EPSILON_COORD_DIFF = 1e-6;
 export const MARKER_CENTER_OFFSET_Y = -12;
 export const MARKER_CENTER_OFFSET_X = 0;
-export const EASE_HALF = 0.5;
-export const EASE_CUBIC_LOW_MULTIPLIER = 4;
-export const EASE_CUBIC_HIGH_MULTIPLIER = 2;

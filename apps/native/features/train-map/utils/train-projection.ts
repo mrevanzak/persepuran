@@ -1,10 +1,10 @@
 import type { ApiOutputs } from "@server/routers";
+import type { LatLng } from "react-native-maps";
 
 export type Stations = ApiOutputs["train"]["stations"];
 export type Routes = ApiOutputs["train"]["routes"];
 export type Train = ApiOutputs["train"]["gapeka"][number];
 export type TrainStep = Train["paths"][number];
-export type LatLng = { latitude: number; longitude: number };
 
 export type ProjectedTrain = {
   id: number;
@@ -65,7 +65,9 @@ function positionOnRoute(route: Routes[string], P: number): LatLng | null {
 }
 
 function pickActiveStep(now: number, steps: TrainStep[]): TrainStep | null {
-  return steps.find((step) => isWithin(now, step.start_ms, step.depart_ms)) ?? null;
+  return (
+    steps.find((step) => isWithin(now, step.start_ms, step.depart_ms)) ?? null
+  );
 }
 
 export function projectTrain(
